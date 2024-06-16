@@ -6,6 +6,14 @@
         "silverstripe",
         "CMS"
     ],
+  "authors": [
+    {
+      "name": "Luc Shelton","email": "lucshelton@gmail.com"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/loveduckie/silverstripe-markdown/issues"
+  },
     "license": "BSD-3-Clause",
     "require": {
         "silverstripe/framework": "^5.0",
@@ -24,9 +32,11 @@
         }
     },
     "extra": {
+        "installer-name": "silverstripe-markdown",
         "expose": [
             "client/dist"
-        ]
+        ],
+        "screenshots": []
     },
     "minimum-stability": "dev",
     "prefer-stable": true
