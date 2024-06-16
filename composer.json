@@ -19,8 +19,8 @@
     },
     "autoload": {
         "psr-4": {
-            "LoveDuckie\\Markdown\\": "src/",
-            "LoveDuckie\\Markdown\\Tests\\": "tests/php/"
+            "LoveDuckie\\Silverstripe\\Markdown\\": "src/",
+            "LoveDuckie\\Silverstripe\\Markdown\\Tests\\": "tests/php/"
         }
     },
     "extra": {
