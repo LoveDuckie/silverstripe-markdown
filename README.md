@@ -1,14 +1,39 @@
-# Silverstripe CMS supported module skeleton
 
-A useful skeleton to more easily create a [Silverstripe CMS Module](https://docs.silverstripe.org/en/developer_guides/extending/modules/) that conform to the
-[Module Standard](https://docs.silverstripe.org/en/developer_guides/extending/modules/#module-standard).
+<div align="center">
 
-This README contains descriptions of the parts of this module base you should customise to meet you own module needs.
-For example, the module name in the H1 above should be you own module name, and the description text you are reading now
-is where you should provide a good short explanation of what your module does.
+# silverstripe-markdown
 
-Where possible we have included default text that can be included as is into your module and indicated in
-other places where you need to customise it
+</div>
+
+A Silverstripe module for enabling support for Markdown syntax with server-sided rendering and content editing support.
+
+---
+
+## Goal
+
+Let's be honest, the existing [TinyMCE editor](https://www.tiny.cloud/) used by [Silverstripe](https://silverstripe.org/) for editing page content absolutely sucks. It's WYSIWYG editor produces an inaccurate rendering of what will be displayed on the final page, and editing HTML elements in the editor pane is awkward and prone to mistakes. HTML elements either mysteriously disappear or get unexpectedly added.
+
+For technical blogging, this can be an complete nightmare especially when embedding other forms of media such as video, images, and code snippets. It also makes the content a lot less portable. This Silverstripe module proposes using something that is friendlier for programmers instead, and letting the server render the HTML from the source Markdown "code" as desired.
+
+- Integrate an editor into Silverstripe that is friendly with Markdown syntax.
+- Add extensible server-sided support for rendering Markdown into HTML with Bootstrap 5 styling.
+
+---
+
+## Related Projects
+
+This module works best with the following projects
+
+- **Blog Tool**
+  - A command-line tool written in Python for writing, managing, and publishing content written in Markdown syntax.
+  - Support for multiple publishing platforms including Silverstripe, Wordpress, dev.to and Hashnode.
+  - [Link](https://github.com/LoveDuckie/blog-tool)
+- **Silverstripe Image Uploader API**
+  - Enables for image assets to be uploaded remotely and securely to an existing Silverstripe installation through an exposed API.
+  - Accepts Base64 and binary payloads.  
+
+---
+
 
 Below is a template of the sections of your `README.md` you should ideally include to met the Module Standard
 and help others make use of your modules.
