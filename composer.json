@@ -1,6 +1,6 @@
 {
-    "name": "silverstripe-module/skeleton",
-    "description": "A skeleton for Silverstripe CMS modules.",
+    "name": "loveduckie/silverstripe-markdown",
+    "description": "A module for integrating Markdown support with Silverstripe content editing features.",
     "type": "silverstripe-vendormodule",
     "keywords": [
         "silverstripe",
@@ -19,8 +19,8 @@
     },
     "autoload": {
         "psr-4": {
-            "SilverStripeModule\\Skeleton\\": "src/",
-            "SilverStripeModule\\Skeleton\\Tests\\": "tests/php/"
+            "LoveDuckie\\Markdown\\": "src/",
+            "LoveDuckie\\Markdown\\Tests\\": "tests/php/"
         }
     },
     "extra": {
