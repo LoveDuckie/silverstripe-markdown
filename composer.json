@@ -27,8 +27,8 @@
     },
     "autoload": {
         "psr-4": {
-            "LoveDuckie\\Silverstripe\\Markdown\\": "src/",
-            "LoveDuckie\\Silverstripe\\Markdown\\Tests\\": "tests/php/"
+            "LoveDuckie\\SilverStripe\\Markdown\\": "src/",
+            "LoveDuckie\\SilverStripe\\Markdown\\Tests\\": "tests/php/"
         }
     },
     "extra": {
@@ -39,5 +39,12 @@
         "screenshots": []
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true,
+            "phpstan/extension-installer": true,
+            "silverstripe/vendor-plugin": true
+        }
+    }
 }
