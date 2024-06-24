@@ -1,0 +1,7 @@
+---
+Name: markdownfieldtype
+---
+
+SilverStripe\Core\Injector\Injector:
+  MarkdownText:
+    class: LoveDuckie\SilverStripe\Markdown\Database\MarkdownText

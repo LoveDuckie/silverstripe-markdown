@@ -1,5 +1,5 @@
 <?php
-namespace LoveDuckie\SilverStripe\Markdown\extensions;
+namespace LoveDuckie\SilverStripe\Markdown\Extensions;
 
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Forms\FieldList;
