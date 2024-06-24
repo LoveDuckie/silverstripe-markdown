@@ -2,13 +2,14 @@ import React from 'react';
 
 import ReactDOM from 'react-dom';
 
-import ReactSimpleMDE from 'react-simplemde-editor';
+import SimpleMdeReact from 'react-simplemde-editor';
 import jQuery from 'jquery';
-import ShortcodeParser from '../ShortCodeParser/ShortCodeParser';
+import ShortCodeParser from '../ShortCodeParser/ShortCodeParser';
 
-const SimpleMDE = require('simplemde');
+// const SimpleMDE = require('simplemde');
+const EasyMDE = require('easymde');
 
-const parser = new ShortcodeParser();
+const parser = new ShortCodeParser();
 
 const ss = typeof window.ss !== 'undefined' ? window.ss : {};
 if (typeof ss.markdownConfigs === 'undefined') {
@@ -17,16 +18,19 @@ if (typeof ss.markdownConfigs === 'undefined') {
 
 ss.markdownConfigs.readToolbarConfigs = function (data) {
   const toolbar = [];
-  for (const key in data) {
+  for (let i = 0; i < data.length; i++) {
+  // for (const key in data) {
+    const key = data[i];
     const element = data[key];
+
     if (typeof element === 'string') {
       toolbar.push(element);
     } else {
       const action = element.action;
-      if (typeof SimpleMDE[element.action] !== 'undefined') {
+      if (typeof EasyMDE[element.action] !== 'undefined') {
         toolbar.push({
           name: element.name,
-          action: SimpleMDE[element.action],
+          action: EasyMDE[element.action],
           className: element.className,
           title: element.title,
         });
@@ -86,7 +90,7 @@ class MarkdownEditorField extends React.Component {
   render() {
     return (
       <div className="editor-container">
-        <ReactSimpleMDE
+        <SimpleMdeReact
           value={this.props.textarea.value}
           onChange={this.handleChange.bind(this)}
           options={{
@@ -130,7 +134,7 @@ jQuery.entwine('ss', ($) => {
       dialog.setElement(editor);
       dialog.open();
     } else {
-      SimpleMDE.drawImage(editor);
+      EasyMDE.drawImage(editor);
     }
   });
 
@@ -160,4 +164,4 @@ jQuery.entwine('ss', ($) => {
   });
 });
 
-export default { MarkdownEditorField };
+export default MarkdownEditorField;

@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Nivanka Fonseka
- * Date: 24/09/2017
- * Time: 00:02
- */
-
 namespace LoveDuckie\SilverStripe\Markdown\extensions;
 
 use SilverStripe\Core\Config\Config;

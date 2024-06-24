@@ -1,12 +1,4 @@
 <?php
-/**
- * Created by Nivanka Fonseka (nivanka@silverstripers.com).
- * User: nivankafonseka
- * Date: 9/23/17
- * Time: 6:30 AM
- * To change this template use File | Settings | File Templates.
- */
-
 namespace LoveDuckie\SilverStripe\Markdown\extensions;
 
 use SilverStripe\Core\Extension;

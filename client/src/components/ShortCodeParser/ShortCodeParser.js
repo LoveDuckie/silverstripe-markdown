@@ -45,7 +45,7 @@ class ShortCodeParser {
 
   parseShortcode(name, buf, inline) {
     let regex;
-    let match;
+    let match = null;
     let attr = {};
 
     if (inline) {
@@ -65,8 +65,8 @@ class ShortCodeParser {
         'i'
       );
     }
-
-    while ((match = buf.match(regex)) !== null) {
+    match = buf.match(regex);
+    while (match !== null) {
       const key = match[3] || match[2];
       const val = match[4] || match[3];
       const pattern = match[1];
@@ -77,6 +77,7 @@ class ShortCodeParser {
       } else {
         break;
       }
+      match = buf.match(regex);
     }
 
     attr = Object.keys(attr)

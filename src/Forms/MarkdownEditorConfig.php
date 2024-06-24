@@ -1,12 +1,4 @@
 <?php
-/**
- * Created by Nivanka Fonseka (nivanka@silverstripers.com).
- * User: nivankafonseka
- * Date: 10/24/17
- * Time: 10:27 AM
- * To change this template use File | Settings | File Templates.
- */
-
 namespace LoveDuckie\SilverStripe\Markdown\Forms;
 
 use LogicException;

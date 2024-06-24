@@ -1,13 +1,5 @@
 <?php
-/**
- * Created by Nivanka Fonseka (nivanka@silverstripers.com).
- * User: nivankafonseka
- * Date: 10/17/17
- * Time: 3:12 PM
- * To change this template use File | Settings | File Templates.
- */
-
-namespace SilverStripers\markdown\shortcodes;
+namespace LoveDuckie\SilverStripe\Markdown\Shortcodes;
 
 use SilverStripe\Assets\Image;
 use SilverStripe\Core\Convert;

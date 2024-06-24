@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by Nivanka Fonseka (nivanka@silverstripers.com).
- * User: nivankafonseka
- * Date: 4/18/15
- * Time: 11:12 AM
- * To change this template use File | Settings | File Templates.
- */
 namespace LoveDuckie\SilverStripe\Markdown\Forms;
 
 use SilverStripe\Forms\TextareaField;
