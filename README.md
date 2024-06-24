@@ -25,11 +25,11 @@ This module works best with the following projects
 
 - **Blog Tool**
   - A command-line tool written in Python for writing, managing, and publishing content written in Markdown syntax.
-  - Support for multiple publishing platforms including Silverstripe, Wordpress, dev.to and Hashnode.
+  - Support for multiple publishing platforms including [Silverstripe](https://www.silverstripe.org/), [Wordpress](https://wordpress.com/), [dev.to](https://dev.to/) and [Hashnode](http://hashnode.com/).
   - [Link](https://github.com/LoveDuckie/blog-tool)
 - **Silverstripe Image Uploader API**
   - Enables for image assets to be uploaded remotely and securely to an existing Silverstripe installation through an exposed API.
-  - Accepts Base64 and binary payloads.  
+  - Accepts [Base64](https://en.wikipedia.org/wiki/Base64) and binary payloads.  
 
 ---
 
