@@ -101,7 +101,10 @@ class ShortCodeParser {
   }
 
   parse(plainText) {
-    for (const name in this.shortCodes) {
+    const shortCodeKeys = Object.keys(this.shortCodes);
+    // for (const name in this.shortCodes) {
+    for (let i = 0; i < shortCodeKeys.length; i++) {
+      const name = shortCodeKeys[i];
       const regex = {
         wrapper: new RegExp(
           util.format(SHORTCODE_OPEN, name) +
@@ -123,8 +126,8 @@ class ShortCodeParser {
       let matches = plainText.match(regex.wrapper);
 
       if (matches) {
-        for (let m, data, i = 0, len = matches.length; i < len; i++) {
-          m = matches[i];
+        for (let m, data, j = 0, len = matches.length; j < len; j++) {
+          m = matches[j];
           data = this.parseShortcode(name, m);
           plainText = plainText.replace(
             m,

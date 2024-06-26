@@ -8,7 +8,8 @@ class MarkdownFieldExtension extends Extension
 {
     public function init()
     {
-        Requirements::javascript('loveduckie/silverstripe-markdown:client/dist/bundle.min.js');
-        Requirements::css('loveduckie/silverstripe-markdown:client/dist/bundle.min.css');
+        Requirements::javascript('loveduckie/silverstripe-markdown:client/dist/js/bundle.js');
+        Requirements::css('loveduckie/silverstripe-markdown:client/dist/styles/bundle.css');
+        Requirements::javascript('silverstripe/asset-admin:client/dist/js/bundle.js');
     }
 }

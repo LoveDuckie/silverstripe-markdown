@@ -43,7 +43,7 @@ class MarkdownText extends DBText
      * @return string parse contents of the markdown field to tempates
      * parse contents of the markdown field to tempates
      */
-    public function ParseMarkdown($bCache = true, $strValue = '')
+    public function ParseMarkdown(bool $bCache = true, string $strValue = '')
     {
         if ($bCache && $this->parsedContent) {
             return $this->parsedContent;
@@ -70,8 +70,6 @@ class MarkdownText extends DBText
                 }
             }
         }
-
-
 
         $parseDown = new GithubMarkdown();
         $parsed = $parseDown->parse($parsed);

@@ -1,8 +1,7 @@
 import React from 'react';
 
-import ReactDOM from 'react-dom';
-
 import SimpleMdeReact from 'react-simplemde-editor';
+import 'easymde/dist/easymde.min.css';
 import jQuery from 'jquery';
 import ShortCodeParser from '../ShortCodeParser/ShortCodeParser';
 
@@ -12,15 +11,17 @@ const EasyMDE = require('easymde');
 const parser = new ShortCodeParser();
 
 const ss = typeof window.ss !== 'undefined' ? window.ss : {};
+
 if (typeof ss.markdownConfigs === 'undefined') {
   ss.markdownConfigs = {};
 }
 
 ss.markdownConfigs.readToolbarConfigs = function (data) {
   const toolbar = [];
-  for (let i = 0; i < data.length; i++) {
-  // for (const key in data) {
-    const key = data[i];
+  const dataKeys = Object.keys(data);
+  for (let i = 0; i < dataKeys.length; i++) {
+    // for (const key in data) {
+    const key = dataKeys[i];
     const element = data[key];
 
     if (typeof element === 'string') {
@@ -57,14 +58,11 @@ parser.registerShortCode(
     `<img src="${opts.thumbnail} width="${opts.width} height="${opts.height}">`
 );
 
-class MarkdownEditorField extends React.Component {
+class MarkdownEditorComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = ss.markdownConfigs;
-  }
-
-  handleChange(value) {
-    this.props.textarea.value = value;
+    this._handleChange = this._handleChange.bind(this);
   }
 
   previewRender(plainText, preview) {
@@ -72,6 +70,12 @@ class MarkdownEditorField extends React.Component {
     preview.classList.add(this.identifier);
     const parsedText = parser.parse(plainText);
     return this.parent.markdown(parsedText);
+  }
+
+  _handleChange(value) {
+    console.log(value);
+    console.log(this.props.textArea);
+    this.props.textArea.value = value;
   }
 
   static addCustomAction(key, action) {
@@ -91,9 +95,10 @@ class MarkdownEditorField extends React.Component {
     return (
       <div className="editor-container">
         <SimpleMdeReact
-          value={this.props.textarea.value}
-          onChange={this.handleChange.bind(this)}
+          value={this.props.textArea.value}
+          onChange={this._handleChange}
           options={{
+            // autoDownloadFontAwesome: false,
             spellChecker: true,
             dragDrop: false,
             keyMap: 'sublime',
@@ -107,16 +112,18 @@ class MarkdownEditorField extends React.Component {
   }
 }
 
-window.MarkdownEditorField = MarkdownEditorField;
+window.MarkdownEditorField = MarkdownEditorComponent;
 
 jQuery.entwine('ss', ($) => {
-  MarkdownEditorField.addCustomAction('ssEmbed', (editor) => {
+  MarkdownEditorComponent.addCustomAction('ssEmbed', (editor) => {
     if (window.InsertMediaModal) {
       let dialog = $('#insert-md-embed-react__dialog-wrapper');
       if (!dialog.length) {
         dialog = $('<div id="insert-md-embed-react__dialog-wrapper" />');
         $('body').append(dialog);
       }
+      console.log(dialog);
+      console.log(editor);
       dialog.setElement(editor);
       dialog.open();
     } else {
@@ -124,44 +131,21 @@ jQuery.entwine('ss', ($) => {
     }
   });
 
-  MarkdownEditorField.addCustomAction('ssImage', (editor) => {
+  MarkdownEditorComponent.addCustomAction('ssImage', (editor) => {
     if (window.InsertMediaModal) {
       let dialog = $('#insert-md-media-react__dialog-wrapper');
       if (!dialog.length) {
         dialog = $('<div id="insert-md-media-react__dialog-wrapper" />');
         $('body').append(dialog);
       }
+      console.log(dialog);
+      console.log(editor);
       dialog.setElement(editor);
       dialog.open();
     } else {
       EasyMDE.drawImage(editor);
     }
   });
-
-  $('.js-markdown-container:visible').entwine({
-    onunmatch() {
-      this._super();
-      ReactDOM.unmountComponentAtNode(this[0]);
-    },
-    onmatch() {
-      this._super();
-      this.refresh();
-    },
-    refresh() {
-      const textArea = $(this).parent().find('textarea')[0];
-      const data = JSON.parse(textArea.dataset.config);
-      const toolbar = ss.markdownConfigs.readToolbarConfigs(data.toolbar);
-
-      ReactDOM.render(
-        <MarkdownEditorField
-          textarea={textArea}
-          toolbar={toolbar}
-          identifier={data.identifier}
-        />,
-        this[0]
-      );
-    },
-  });
 });
 
-export default MarkdownEditorField;
+export default MarkdownEditorComponent;

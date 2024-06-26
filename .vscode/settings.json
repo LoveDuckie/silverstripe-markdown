@@ -1,0 +1,6 @@
+{
+    "search.exclude": {
+        "client/dist/**": true,
+        "vendor/**": true
+    }
+}

@@ -2,7 +2,31 @@
 @import 'variables';
 
 // Import your SCSS stylesheets using relative paths from "components"
-@import '../components/ExampleComponent/ExampleComponent.scss';
+@import '../components/MarkdownEditorComponent/MarkdownEditorComponent.scss';
 
 // Import other legacy SCSS stylesheets that don't relate to react components
 @import 'admin/pages/pages';
+
+
+// @import "../../../node_modules/react-simplemde-editor/dist/simplemde.min";
+
+
+.editor-toolbar.fullscreen {
+	z-index: 9999;
+}
+
+.CodeMirror-fullscreen {
+	z-index: 9999;
+}
+
+.editor-preview-side {
+	z-index: 9999;
+}
+
+textarea.markdowneditor {
+	display: none;
+}
+
+.editor-toolbar a {
+	margin: 0 2px;
+}

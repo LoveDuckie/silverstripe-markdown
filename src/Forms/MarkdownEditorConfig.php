@@ -242,7 +242,15 @@ class MarkdownEditorConfig
     {
         return [
             'data-editor' => 'markDown',
-            'data-config' => Convert::array2json($this->getSettings()),
+            // 'data-config' => Convert::array2json($this->getSettings()),
+            'data-config' => json_encode($this->getSettings()),
+            // 'data-config' => json_encode(
+            //     [
+            //         'toolbar'       => [],
+            //         'editor_css'    => [],
+            //         'identifier'	=> $this->getIdentifier()
+            //     ]
+            // ),
         ];
     }
 }
