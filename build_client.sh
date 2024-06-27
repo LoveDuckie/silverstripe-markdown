@@ -14,4 +14,12 @@ export CURRENT_SCRIPT_FILENAME_BASE=${CURRENT_SCRIPT_FILENAME%.*}
 write_header
 
 
+write_info "build_client" "Installing Composer Dependencies"
+composer install
+
+nvm use
+
+write_info "build_client" "Installing `
+npm install -g yarn
+
 write_success "build_client" "Done"

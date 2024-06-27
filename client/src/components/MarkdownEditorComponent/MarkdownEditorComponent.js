@@ -5,10 +5,16 @@ import 'easymde/dist/easymde.min.css';
 import jQuery from 'jquery';
 import ShortCodeParser from '../ShortCodeParser/ShortCodeParser';
 
-// const SimpleMDE = require('simplemde');
 const EasyMDE = require('easymde');
 
 const parser = new ShortCodeParser();
+parser.registerShortCode('image_link', (buffer, opts) => opts.url);
+
+parser.registerShortCode(
+  'embed',
+  (buffer, opts) =>
+    `<img src="${opts.thumbnail} width="${opts.width} height="${opts.height}">`
+);
 
 const ss = typeof window.ss !== 'undefined' ? window.ss : {};
 
@@ -50,14 +56,6 @@ ss.markdownConfigs.readToolbarConfigs = function (data) {
   return toolbar;
 };
 
-parser.registerShortCode('image_link', (buffer, opts) => opts.url);
-
-parser.registerShortCode(
-  'embed',
-  (buffer, opts) =>
-    `<img src="${opts.thumbnail} width="${opts.width} height="${opts.height}">`
-);
-
 class MarkdownEditorComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -73,8 +71,6 @@ class MarkdownEditorComponent extends React.Component {
   }
 
   _handleChange(value) {
-    console.log(value);
-    console.log(this.props.textArea);
     this.props.textArea.value = value;
   }
 
@@ -112,7 +108,7 @@ class MarkdownEditorComponent extends React.Component {
   }
 }
 
-window.MarkdownEditorField = MarkdownEditorComponent;
+// window.MarkdownEditorComponent = MarkdownEditorComponent;
 
 jQuery.entwine('ss', ($) => {
   MarkdownEditorComponent.addCustomAction('ssEmbed', (editor) => {
@@ -122,8 +118,7 @@ jQuery.entwine('ss', ($) => {
         dialog = $('<div id="insert-md-embed-react__dialog-wrapper" />');
         $('body').append(dialog);
       }
-      console.log(dialog);
-      console.log(editor);
+
       dialog.setElement(editor);
       dialog.open();
     } else {
@@ -138,8 +133,7 @@ jQuery.entwine('ss', ($) => {
         dialog = $('<div id="insert-md-media-react__dialog-wrapper" />');
         $('body').append(dialog);
       }
-      console.log(dialog);
-      console.log(editor);
+
       dialog.setElement(editor);
       dialog.open();
     } else {

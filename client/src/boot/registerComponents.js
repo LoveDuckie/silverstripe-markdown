@@ -3,7 +3,6 @@ import MarkdownEditorComponent from 'components/MarkdownEditorComponent/Markdown
 
 export default () => {
   Injector.component.registerMany({
-    // List your React components here so Injector is aware of them
     MarkdownEditorComponent
   });
 };

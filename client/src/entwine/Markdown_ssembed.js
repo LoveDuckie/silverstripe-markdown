@@ -1,19 +1,20 @@
 import jQuery from 'jquery';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-
 import { ApolloProvider } from '@apollo/client';
 import { provideInjector } from 'lib/Injector';
 
+
 const InjectableInsertEmbedModal = window.InsertEmbedModal
-  ? provideInjector(window.InsertEmbedModal.default)
+  ? provideInjector(window.InsertEmbedModal)
   : null;
+// const InjectableInsertEmbedModal = Injector.component.get('InsertEmbedModal');
 
 jQuery.entwine('ss', ($) => {
-  $('#insert-md-embed-react__dialog-wrapper').entwine({
+  $('.js-injector-boot #insert-md-embed-react__dialog-wrapper').entwine({
     Element: null,
-
     Data: {},
+    ReactRoot: null,
 
     onunmatch() {
       // solves errors given by ReactDOM "no matched root found" error.
@@ -30,11 +31,13 @@ jQuery.entwine('ss', ($) => {
     },
 
     open() {
+      console.log('showing media modal!');
       this._renderModal(true);
     },
 
     close() {
       this.setData({});
+      console.log('closing media modal!');
       this._renderModal(false);
     },
 

@@ -37,23 +37,191 @@ var _default = exports["default"] = App;
 "use strict";
 
 
+var _registerComponents = _interopRequireDefault(__webpack_require__(/*! boot/registerComponents */ "./client/src/boot/registerComponents.js"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+document.addEventListener('DOMContentLoaded', () => {
+  (0, _registerComponents.default)();
+});
+
+/***/ }),
+
+/***/ "./client/src/boot/injector-index.js":
+/*!*******************************************!*\
+  !*** ./client/src/boot/injector-index.js ***!
+  \*******************************************/
+/***/ (function(__unused_webpack_module, __unused_webpack_exports, __webpack_require__) {
+
+"use strict";
+
+
 var _react = _interopRequireDefault(__webpack_require__(/*! react */ "react"));
 var _client = __webpack_require__(/*! react-dom/client */ "react-dom/client");
 var _jquery = _interopRequireDefault(__webpack_require__(/*! jquery */ "jquery"));
 var _client2 = __webpack_require__(/*! @apollo/client */ "@apollo/client");
 var _Injector = _interopRequireWildcard(__webpack_require__(/*! lib/Injector */ "lib/Injector"));
-var _registerComponents = _interopRequireDefault(__webpack_require__(/*! boot/registerComponents */ "./client/src/boot/registerComponents.js"));
 var _App = _interopRequireDefault(__webpack_require__(/*! App */ "./client/src/App.js"));
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
 function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-(0, _registerComponents.default)();
 _Injector.default.ready(() => {
   const {
     apolloClient,
     store
   } = window.ss;
   const AppWithInjector = (0, _Injector.provideInjector)(_App.default);
+  const InjectableInsertMediaModal = _Injector.default.component.get('InsertMediaModal');
+  (0, _jquery.default)('.js-injector-boot #insert-md-media-react__dialog-wrapper').entwine({
+    Element: null,
+    Data: {},
+    ReactRoot: null,
+    onmatch() {
+      console.log('matched!');
+    },
+    onunmatch() {
+      console.log('unmatched!');
+      this._clearModal();
+    },
+    _clearModal() {
+      const root = this.getReactRoot();
+      if (root) {
+        root.unmount();
+        this.setReactRoot(null);
+      }
+    },
+    open() {
+      console.log('showing media modal!');
+      this._renderModal(true);
+    },
+    close() {
+      console.log('closing media modal!');
+      this._renderModal(false);
+    },
+    _renderModal(show) {
+      var _this = this;
+      if (!InjectableInsertMediaModal) {
+        throw new Error('Embed is not supported, Install silverstripe/asset-admin');
+      }
+      let root = this.getReactRoot();
+      if (!root) {
+        root = (0, _client.createRoot)(this[0]);
+      }
+      const handleHide = () => this.close();
+      const handleInsert = function () {
+        return _this._handleInsert(...arguments);
+      };
+      const attrs = this.getOriginalAttributes();
+      delete attrs.url;
+      root.render(_react.default.createElement(_client2.ApolloProvider, {
+        store: store,
+        client: apolloClient
+      }, _react.default.createElement(InjectableInsertMediaModal, {
+        title: false,
+        type: "insert-media",
+        show: show,
+        onInsert: handleInsert,
+        onHide: handleHide,
+        bodyClassName: "modal__dialog",
+        className: "insert-media-react__dialog-wrapper",
+        requireLinkText: false,
+        fileAttributes: attrs
+      })));
+    },
+    _handleInsert(data, file) {
+      let result = false;
+      this.setData(Object.assign({}, data, file));
+      try {
+        let category = null;
+        if (file) {
+          category = file.category;
+        } else {
+          category = 'image';
+        }
+        switch (category) {
+          case 'image':
+            result = this.insertImage();
+            break;
+          default:
+            result = this.insertFile();
+        }
+      } catch (e) {
+        this.statusMessage(e, 'bad');
+      }
+      if (result) {
+        this.close();
+      }
+      return Promise.resolve();
+    },
+    getOriginalAttributes() {
+      return {};
+    },
+    findPosition(cssClass) {
+      const alignments = ['leftAlone', 'center', 'rightAlone', 'left', 'right'];
+      return alignments.find(alignment => {
+        const expr = new RegExp(`\\b${alignment}\\b`);
+        return expr.test(cssClass);
+      });
+    },
+    getAttributes() {
+      const data = this.getData();
+      return {
+        src: data.url,
+        alt: data.AltText,
+        width: data.InsertWidth,
+        height: data.InsertHeight,
+        title: data.TitleTooltip,
+        class: data.Alignment,
+        'data-id': data.ID,
+        'data-shortcode': 'image'
+      };
+    },
+    getExtraData() {
+      const data = this.getData();
+      return {
+        CaptionText: data && data.Caption
+      };
+    },
+    insertFile() {
+      const $field = this.getElement();
+      const data = this.getData();
+      let linkText = data.title || data.filename;
+      let markdown = '[' + linkText + ']([file_link,id=' + data.ID + '])';
+      let pos = $field.codemirror.getCursor();
+      $field.codemirror.setSelection(pos, pos);
+      $field.codemirror.replaceSelection('\n' + markdown + '\n');
+      this.updateTextarea();
+      return true;
+    },
+    insertImage() {
+      const $field = this.getElement();
+      if (!$field) {
+        return false;
+      }
+      const data = this.getData();
+      const extraData = this.getExtraData();
+      let markdown = '![' + (extraData.CaptionText ? extraData.CaptionText : data.title) + ']([image_link id=' + data.ID + ' width=' + data.InsertWidth + ' height=' + data.InsertHeight + " url='" + data.url + '\'] "' + data.title + '")';
+      let pos = $field.codemirror.getCursor();
+      $field.codemirror.setSelection(pos, pos);
+      $field.codemirror.replaceSelection('\n' + markdown + '\n');
+      this.updateTextarea();
+      return true;
+    },
+    statusMessage(text, type) {
+      const content = (0, _jquery.default)('<div/>').text(text).html();
+      _jquery.default.noticeAdd({
+        text: content,
+        type,
+        stayTime: 5000,
+        inEffect: {
+          left: '0',
+          opacity: 'show'
+        }
+      });
+    },
+    updateTextarea() {
+      const $field = this.getElement();
+      (0, _jquery.default)($field.element).closest('.js-markdown-holder').find('textarea.markdowneditor').val($field.value());
+    }
+  });
   (0, _jquery.default)('.js-markdown-container:visible').entwine({
     ReactRoot: null,
     onmatch() {
@@ -134,6 +302,8 @@ var _ShortCodeParser = _interopRequireDefault(__webpack_require__(/*! ../ShortCo
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 const EasyMDE = __webpack_require__(/*! easymde */ "./node_modules/easymde/src/js/easymde.js");
 const parser = new _ShortCodeParser.default();
+parser.registerShortCode('image_link', (buffer, opts) => opts.url);
+parser.registerShortCode('embed', (buffer, opts) => `<img src="${opts.thumbnail} width="${opts.width} height="${opts.height}">`);
 const ss = typeof window.ss !== 'undefined' ? window.ss : {};
 if (typeof ss.markdownConfigs === 'undefined') {
   ss.markdownConfigs = {};
@@ -169,8 +339,6 @@ ss.markdownConfigs.readToolbarConfigs = function (data) {
   }
   return toolbar;
 };
-parser.registerShortCode('image_link', (buffer, opts) => opts.url);
-parser.registerShortCode('embed', (buffer, opts) => `<img src="${opts.thumbnail} width="${opts.width} height="${opts.height}">`);
 class MarkdownEditorComponent extends _react.default.Component {
   constructor(props) {
     super(props);
@@ -184,8 +352,6 @@ class MarkdownEditorComponent extends _react.default.Component {
     return this.parent.markdown(parsedText);
   }
   _handleChange(value) {
-    console.log(value);
-    console.log(this.props.textArea);
     this.props.textArea.value = value;
   }
   static addCustomAction(key, action) {
@@ -216,7 +382,6 @@ class MarkdownEditorComponent extends _react.default.Component {
     }));
   }
 }
-window.MarkdownEditorField = MarkdownEditorComponent;
 _jquery.default.entwine('ss', $ => {
   MarkdownEditorComponent.addCustomAction('ssEmbed', editor => {
     if (window.InsertMediaModal) {
@@ -225,8 +390,6 @@ _jquery.default.entwine('ss', $ => {
         dialog = $('<div id="insert-md-embed-react__dialog-wrapper" />');
         $('body').append(dialog);
       }
-      console.log(dialog);
-      console.log(editor);
       dialog.setElement(editor);
       dialog.open();
     } else {
@@ -240,8 +403,6 @@ _jquery.default.entwine('ss', $ => {
         dialog = $('<div id="insert-md-media-react__dialog-wrapper" />');
         $('body').append(dialog);
       }
-      console.log(dialog);
-      console.log(editor);
       dialog.setElement(editor);
       dialog.open();
     } else {
@@ -383,11 +544,12 @@ var _client = __webpack_require__(/*! react-dom/client */ "react-dom/client");
 var _client2 = __webpack_require__(/*! @apollo/client */ "@apollo/client");
 var _Injector = __webpack_require__(/*! lib/Injector */ "lib/Injector");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-const InjectableInsertEmbedModal = window.InsertEmbedModal ? (0, _Injector.provideInjector)(window.InsertEmbedModal.default) : null;
+const InjectableInsertEmbedModal = window.InsertEmbedModal ? (0, _Injector.provideInjector)(window.InsertEmbedModal) : null;
 _jquery.default.entwine('ss', $ => {
-  $('#insert-md-embed-react__dialog-wrapper').entwine({
+  $('.js-injector-boot #insert-md-embed-react__dialog-wrapper').entwine({
     Element: null,
     Data: {},
+    ReactRoot: null,
     onunmatch() {
       this._clearModal();
     },
@@ -400,10 +562,12 @@ _jquery.default.entwine('ss', $ => {
       }
     },
     open() {
+      console.log('showing media modal!');
       this._renderModal(true);
     },
     close() {
       this.setData({});
+      console.log('closing media modal!');
       this._renderModal(false);
     },
     _renderModal(show) {
@@ -503,157 +667,26 @@ var _jquery = _interopRequireDefault(__webpack_require__(/*! jquery */ "jquery")
 var _react = _interopRequireDefault(__webpack_require__(/*! react */ "react"));
 var _client = __webpack_require__(/*! react-dom/client */ "react-dom/client");
 var _client2 = __webpack_require__(/*! @apollo/client */ "@apollo/client");
-var _Injector = __webpack_require__(/*! lib/Injector */ "lib/Injector");
+var _Injector = _interopRequireDefault(__webpack_require__(/*! lib/Injector */ "lib/Injector"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-const InjectableInsertMediaModal = window.InsertMediaModal ? (0, _Injector.provideInjector)(window.InsertMediaModal.default) : null;
-_jquery.default.entwine('ss', $ => {
-  $('#insert-md-media-react__dialog-wrapper').entwine({
-    Element: null,
-    Data: {},
-    onunmatch() {
-      this._clearModal();
-    },
-    _clearModal() {
-      this._super();
-      const root = this.getReactRoot();
-      if (root) {
-        root.unmount();
-        this.setReactRoot(null);
-      }
-    },
-    open() {
-      this._renderModal(true);
-    },
-    close() {
-      this._renderModal(false);
-    },
-    _renderModal(show) {
-      var _this = this;
-      if (!InjectableInsertMediaModal) {
-        throw new Error('Embed is not supported, Install silverstripe/asset-admin');
-      }
-      const root = (0, _client.createRoot)(this[0]);
-      this.setReactRoot(root);
-      const handleHide = () => this.close();
-      const handleInsert = function () {
-        return _this._handleInsert(...arguments);
-      };
-      const store = window.ss.store;
-      const client = window.ss.apolloClient;
-      const attrs = this.getOriginalAttributes();
-      delete attrs.url;
-      root.render(_react.default.createElement(_client2.ApolloProvider, {
-        store: store,
-        client: client
-      }, _react.default.createElement(InjectableInsertMediaModal, {
-        title: false,
-        type: "insert-media",
-        show: show,
-        onInsert: handleInsert,
-        onHide: handleHide,
-        bodyClassName: "modal__dialog",
-        className: "insert-media-react__dialog-wrapper",
-        requireLinkText: false,
-        fileAttributes: attrs
-      })));
-    },
-    _handleInsert(data, file) {
-      let result = false;
-      this.setData(Object.assign({}, data, file));
-      try {
-        let category = null;
-        if (file) {
-          category = file.category;
-        } else {
-          category = 'image';
-        }
-        switch (category) {
-          case 'image':
-            result = this.insertImage();
-            break;
-          default:
-            result = this.insertFile();
-        }
-      } catch (e) {
-        this.statusMessage(e, 'bad');
-      }
-      if (result) {
-        this.close();
-      }
-      return Promise.resolve();
-    },
-    getOriginalAttributes() {
-      return {};
-    },
-    findPosition(cssClass) {
-      const alignments = ['leftAlone', 'center', 'rightAlone', 'left', 'right'];
-      return alignments.find(alignment => {
-        const expr = new RegExp(`\\b${alignment}\\b`);
-        return expr.test(cssClass);
-      });
-    },
-    getAttributes() {
-      const data = this.getData();
-      return {
-        src: data.url,
-        alt: data.AltText,
-        width: data.InsertWidth,
-        height: data.InsertHeight,
-        title: data.TitleTooltip,
-        class: data.Alignment,
-        'data-id': data.ID,
-        'data-shortcode': 'image'
-      };
-    },
-    getExtraData() {
-      const data = this.getData();
-      return {
-        CaptionText: data && data.Caption
-      };
-    },
-    insertFile() {
-      const $field = this.getElement();
-      const data = this.getData();
-      let linkText = data.title || data.filename;
-      let markdown = '[' + linkText + ']([file_link,id=' + data.ID + '])';
-      let pos = $field.codemirror.getCursor();
-      $field.codemirror.setSelection(pos, pos);
-      $field.codemirror.replaceSelection('\n' + markdown + '\n');
-      this.updateTextarea();
-      return true;
-    },
-    insertImage() {
-      const $field = this.getElement();
-      if (!$field) {
-        return false;
-      }
-      const data = this.getData();
-      const extraData = this.getExtraData();
-      let markdown = '![' + (extraData.CaptionText ? extraData.CaptionText : data.title) + ']([image_link id=' + data.ID + ' width=' + data.InsertWidth + ' height=' + data.InsertHeight + " url='" + data.url + '\'] "' + data.title + '")';
-      let pos = $field.codemirror.getCursor();
-      $field.codemirror.setSelection(pos, pos);
-      $field.codemirror.replaceSelection('\n' + markdown + '\n');
-      this.updateTextarea();
-      return true;
-    },
-    statusMessage(text, type) {
-      const content = $('<div/>').text(text).html();
-      $.noticeAdd({
-        text: content,
-        type,
-        stayTime: 5000,
-        inEffect: {
-          left: '0',
-          opacity: 'show'
-        }
-      });
-    },
-    updateTextarea() {
-      const $field = this.getElement();
-      $($field.element).closest('.js-markdown-holder').find('textarea.markdowneditor').val($field.value());
-    }
-  });
-});
+_jquery.default.entwine('ss', $ => {});
+
+/***/ }),
+
+/***/ "./client/src/entwine/global.js":
+/*!**************************************!*\
+  !*** ./client/src/entwine/global.js ***!
+  \**************************************/
+/***/ (function(__unused_webpack_module, __unused_webpack_exports, __webpack_require__) {
+
+"use strict";
+
+
+var _jquery = _interopRequireDefault(__webpack_require__(/*! jquery */ "jquery"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+(function ($) {
+  $(document).ready(() => {});
+})(_jquery.default);
 
 /***/ }),
 
@@ -23595,9 +23628,11 @@ var __webpack_exports__ = {};
   \**************************************/
 
 
+__webpack_require__(/*! boot/index */ "./client/src/boot/index.js");
+__webpack_require__(/*! boot/injector-index */ "./client/src/boot/injector-index.js");
+__webpack_require__(/*! entwine/global */ "./client/src/entwine/global.js");
 __webpack_require__(/*! entwine/Markdown_ssembed */ "./client/src/entwine/Markdown_ssembed.js");
 __webpack_require__(/*! entwine/Markdown_ssmedia */ "./client/src/entwine/Markdown_ssmedia.js");
-__webpack_require__(/*! boot/index */ "./client/src/boot/index.js");
 }();
 /******/ })()
 ;
