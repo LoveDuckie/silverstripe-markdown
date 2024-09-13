@@ -24,6 +24,15 @@ This Silverstripe module aims to replace the current WYSIWYG approach with a mor
 
 ---
 
+## Usage
+
+```bash
+#!/bin/bash
+composer require loveduckie/silverstripe-markdown
+```
+
+---
+
 ## Related Projects
 
 This module works best with the following projects
