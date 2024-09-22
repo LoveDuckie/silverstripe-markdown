@@ -20,7 +20,7 @@
         "silverstripe/admin": "^2.0",
         "michelf/php-markdown": "^2.0",
         "erusev/parsedown": "^1.7",
-        "silverstripe/asset-admin": "^2.2",
+        "silverstripe/asset-admin": "^2.0",
         "cebe/markdown": "^1.2"
     },
     "require-dev": {
