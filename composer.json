@@ -1,6 +1,7 @@
 {
     "name": "loveduckie/silverstripe-markdown",
     "description": "A module for integrating Markdown support with Silverstripe content editing features.",
+    "homepage": "https://lucshelton.com",
     "type": "silverstripe-vendormodule",
     "keywords": [
         "silverstripe",
